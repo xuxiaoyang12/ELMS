@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mxiaixy.mapper.DeviceMapper">
+    <insert id="addDevice">
+        insert into t_device(name,total,currentTotal,unit,price,modifyTime)
+        VALUES (#{name},#{total},#{currentTotal},#{unit},#{price},#{modifyTime})
+    </insert>
+
+    <select id="findAllDevice" resultType="com.mxiaixy.pojo.Device">
+        select * FROM  t_device
+    </select>
+    <select id="findById" resultType="com.mxiaixy.pojo.Device">
+        select * from t_device where `id` = #{id}
+    </select>
+    <select id="findByName" resultType="com.mxiaixy.pojo.Device">
+        select * from t_device  where  `name` = #{name}
+    </select>
+</mapper>

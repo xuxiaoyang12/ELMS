@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mxiaixy.mapper.DeviceRentDetailMapper">
+
+    <insert id="saveDeviceRentDetail">
+        insert into t_device_rent_detail(device_name,device_unit,device_price,num,total_cost,rent_id)
+        VALUES(#{deviceName},#{deviceUnit},#{devicePrice},#{num},#{totalCost},#{rentId});
+    </insert>
+    <select id="findByRendId" resultType="com.mxiaixy.pojo.DeviceRentDetail">
+        SELECT  * FROM  t_device_rent_detail WHERE rent_id  = #{id}
+    </select>
+</mapper>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mxiaixy.mapper.PanMapper">
+    <insert id="addFolder">
+          insert into t_disk(source_name,`name`,fid,`size`,create_time,create_user,`type`)
+        VALUES
+        (#{sourceName},#{name},#{fid},#{size},#{createTime},#{createUser},#{type})
+    </insert>
+    <delete id="delDiskById">
+        delete from t_disk where id = #{id}
+    </delete>
+    <delete id="delBatchById">
+        delete from t_disk where id in (
+        <foreach collection="list" item="id" separator=",">
+            #{id}
+        </foreach>
+
+        )
+    </delete>
+
+
+    <select id="findDiskByFid" resultType="com.mxiaixy.pojo.Disk">
+        select * from t_disk where fid = #{fid}
+    </select>
+    <select id="findDiskById" resultType="com.mxiaixy.pojo.Disk">
+        select * from t_disk where id = #{id}
+    </select>
+    <select id="findAllDisk" resultType="com.mxiaixy.pojo.Disk">
+        select * from t_disk
+    </select>
+</mapper>

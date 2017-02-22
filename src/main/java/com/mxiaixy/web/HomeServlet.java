@@ -14,6 +14,11 @@ import java.io.IOException;
 public class HomeServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("WEB-INF/views/home.jsp");
+        System.out.println("小梦梦");
+//        resp.sendRedirect("/WEB-INF/views/home.jsp");
+        //req.getRequestDispatcher("/WEB-INF/views/home.jsp");
+        req.getRequestDispatcher("/home.jsp");
+        // resp.sendRedirect("/home.jsp");
+
     }
 }

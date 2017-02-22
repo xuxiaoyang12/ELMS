@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mxiaixy.mapper.DeviceRentMapper">
+    <insert id="saveDeviceRent" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_device_rent (device_name,device_unit,device_price
+        ,create_time,reback_time,num,days,company,corportion,address
+        ,company_phone,phone,total_cost,first_cost,last_cost,serial_number)
+        VALUES(#{deviceName},#{deviceUnit},#{devicePrice},#{createTime}
+        ,#{rebackTime},#{num},#{days},#{company},#{corportion},#{address}
+        ,#{companyPhone},#{phone},#{totalCost},#{firstCost},#{lastCost},#{serialNumber});
+    </insert>
+    <update id="changState">
+        UPDATE t_device_rent
+        set state = #{state}
+        where id = #{id}
+    </update>
+    <select id="findById" resultType="com.mxiaixy.pojo.DeviceRent">
+        SELECT * from t_device_rent WHERE  id = #{id}
+    </select>
+    <select id="findAllByQueryParam" resultType="com.mxiaixy.pojo.DeviceRent">
+        select * from t_device_rent order by id DESC
+        limit ${start},${length}
+    </select>
+    <select id="countOfDeviceRent" resultType="java.lang.Long">
+        select count(*) from t_device_rent
+    </select>
+    <select id="findBySerialNumber" resultType="com.mxiaixy.pojo.DeviceRent">
+        select *  FROM  t_device_rent where serial_number = #{serialNumber}
+    </select>
+
+</mapper>

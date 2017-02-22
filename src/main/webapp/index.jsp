@@ -1,4 +1,4 @@
 
 <%
-    response.sendRedirect("/home");
+    response.sendRedirect("/user/login");
 %>
