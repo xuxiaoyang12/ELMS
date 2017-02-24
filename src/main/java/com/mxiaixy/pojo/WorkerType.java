@@ -11,6 +11,15 @@ public class WorkerType implements Serializable {
     private Integer id;
     private String workName;
     private float workPrice;
+    private Integer workNum;
+
+    public Integer getWorkNum() {
+        return workNum;
+    }
+
+    public void setWorkNum(Integer workNum) {
+        this.workNum = workNum;
+    }
 
     public Integer getId() {
         return id;

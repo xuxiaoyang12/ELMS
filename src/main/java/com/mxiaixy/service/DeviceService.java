@@ -46,4 +46,6 @@ public interface DeviceService {
     DeviceRent findDeviceRentById(Integer id);
 
     void changerState(Integer id);
+
+    WorkerType findWorkerById(Integer id);
 }

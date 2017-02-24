@@ -9,6 +9,8 @@ import com.mxiaixy.pojo.*;
 import com.mxiaixy.service.DeviceService;
 import com.mxiaixy.util.SerialNumberUtil;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -36,6 +38,8 @@ public class DeviceServiceImpl implements DeviceService {
     private DeviceRentDocMapper deviceRentDocMapper;
     @Autowired
     private DeviceWorkerTypeMapper deviceWorkerTypeMapper;
+    @Autowired
+    private FinanceMapper financeMapper;
 
     @Value("${upload.path}")
     private String filePath;
@@ -101,7 +105,8 @@ public class DeviceServiceImpl implements DeviceService {
         deviceRent.setTotalCost(deviceRentDto.getTotalCost());
         deviceRent.setFirstCost(deviceRentDto.getFirstCost());
         deviceRent.setLastCost(deviceRentDto.getLastCost());
-        deviceRent.setSerialNumber(SerialNumberUtil.getSerialNumber());
+        String serialNumer = SerialNumberUtil.getSerialNumber();
+        deviceRent.setSerialNumber(serialNumer);
 
         deviceRentMapper.saveDeviceRent(deviceRent);
         //2.保存合同详情
@@ -147,6 +152,24 @@ public class DeviceServiceImpl implements DeviceService {
 
 
         //4，保存财务流水
+        //获取财务流水对象
+        Finance finance = new Finance();
+        finance.setName(deviceRentDto.getCompany()+" 预付款");//设置财务流水名称
+        finance.setSerialNumber(new DateTime().toString("YYYYmmDD")+ RandomStringUtils.randomNumeric(4));
+        finance.setType(Finance.IN_TYPE);//金额类型
+        finance.setMoney(deviceRentDto.getFirstCost());//预付款
+        finance.setModule("设备租赁模块");//模块
+        finance.setState(Finance.DEFAULT_STATE);
+        finance.setCreateTime(deviceRentDto.getCreateTime());
+        //TODO 新增登陆模块后添加
+        finance.setCreateUser("tom");
+        finance.setConfirmUser("tom");
+        finance.setConfirmDate(new DateTime().toString("YYYY-MM-DD"));//财务流水创建时间
+        finance.setRemark("预付款");
+        finance.setDeviceSerialNumber(serialNumer);
+        financeMapper.saveFinance(finance);
+
+
         return String.valueOf(deviceRent.getSerialNumber());//返回对象序列号
     }
 
@@ -282,5 +305,44 @@ public class DeviceServiceImpl implements DeviceService {
         //
 
         //向财务模块添加尾款记录
+        //通过合同对象id找到合同对象的序列号
+        DeviceRent deviceRent = deviceRentMapper.findById(id);
+        //通过序列号向财务流水更改状态
+        Finance finance = financeMapper.findFinanceByDeviceSerialNumber(deviceRent.getSerialNumber());
+        finance.setState(Finance.OK_STATE);
+        financeMapper.update(finance);
+        //并添加一个新的流水
+        Finance newFinance = new Finance();
+        newFinance.setName(deviceRent.getCompany()+"尾款");
+        newFinance.setSerialNumber(new DateTime().toString("YYYYMMDD")+ RandomStringUtils.randomNumeric(4));
+        newFinance.setType(finance.getType());
+        newFinance.setMoney(deviceRent.getLastCost());
+        newFinance.setModule(finance.getModule());
+        newFinance.setCreateTime(finance.getCreateTime());
+        newFinance.setCreateUser(finance.getCreateUser());
+        newFinance.setConfirmUser(finance.getConfirmUser());
+        newFinance.setConfirmDate(new DateTime().toString("YYYY-MM-DD"));
+        newFinance.setRemark("");
+        newFinance.setDeviceSerialNumber(finance.getDeviceSerialNumber());
+        newFinance.setState(finance.getState());
+        financeMapper.saveFinance(newFinance);
+
+
+    }
+
+    /**
+     * 通过id 查询工种
+     * @param id
+     * @return
+     */
+    @Override
+    public WorkerType findWorkerById(Integer id) {
+        WorkerType workerType = null;
+        if(id !=null){
+           workerType = deviceWorkerTypeMapper.findWorkerTypeById(id);
+        }else{
+            throw new ServiceException("工种不存在或已被删除");
+        }
+        return workerType;
     }
 }

@@ -32,7 +32,7 @@
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
 <!-- Site wrapper -->
-<div class="wrapper">
+<div id="app" class="wrapper">
 
     <%@include file="../../navber/header.jsp"%>
 
@@ -81,7 +81,7 @@
                                         <div class="col-lg-3">
                                             <div class="" >
                                                 <label>租赁公司：&nbsp</label>
-                                                <input type="text"  class="" placeholder="">
+                                                <input type="text" id = "company">
 
                                             </div>
                                         </div>
@@ -89,7 +89,7 @@
                                         <div class="col-lg-3">
                                             <div >
                                                 <label>地 &nbsp;&nbsp址：&nbsp</label>
-                                                <input type="text" class="" name="representative" placeholder="" >
+                                                <input type="text" id="address" >
                                             </div>
                                         </div>
 
@@ -97,7 +97,7 @@
                                         <div class="col-lg-3">
                                             <div class="form-group">
                                                 <label>公司电话：&nbsp</label>
-                                                <input type="text" class="" name="telephone" placeholder="" >
+                                                <input type="text" id="telephone" >
                                             </div>
                                         </div>
 
@@ -110,21 +110,21 @@
                                         <div class="col-lg-3">
                                             <div class="" >
                                                 <label>法人代表：&nbsp</label>
-                                                <input type="text"  class="" id="daynumber" placeholder="">
+                                                <input type="text"  id="corporate">
 
                                             </div>
                                         </div>
                                         <div class="col-lg-3">
                                             <div class="form-group">
                                                 <label>电 &nbsp;&nbsp话：&nbsp</label>
-                                                <input type="text" class="" name="telephone" placeholder="" >
+                                                <input type="text" id="phone" >
                                             </div>
                                         </div>
 
                                         <div class="col-lg-3">
                                             <div>
                                                 <label>身份证号：&nbsp</label>
-                                                <input type="text" class="" placeholder="">
+                                                <input type="text" id="identityCard">
                                             </div>
                                         </div>
                                     </div>
@@ -134,20 +134,20 @@
                                         <div class="col-lg-3">
                                             <div class="" >
                                                 <label>佣金金额：&nbsp</label>
-                                                <input type="text" disabled="disabled" class="" id="sumMoney" placeholder=""value="10000.00">
+                                                <input type="text" disabled="disabled"  id="sumMoney" placeholder=""value="10000.00">
 
                                             </div>
                                         </div>
                                         <div class="col-lg-3">
                                             <div class="form-group">
                                                 <label>预付款：&nbsp</label>
-                                                <input type="text" class="" disabled="disabled" name="firstMoney" placeholder="" value="2000.00">
+                                                <input type="text" class="" disabled="disabled" id="firstMoney" placeholder="" value="2000.00">
                                             </div>
                                         </div>
                                         <div class="col-lg-3">
                                             <div >
                                                 <label>尾&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;款：&nbsp</label>
-                                                <input type="text" class="" disabled="disabled" name="lastMoney" placeholder="" value="8000.00">
+                                                <input type="text" class="" disabled="disabled" id="lastMoney" placeholder="" value="8000.00">
                                             </div>
                                         </div>
                                     </div>
@@ -201,7 +201,7 @@
                                                 <li>上传合同扫描件要求清晰可见</li>
                                                 <li>合同必须公司法人签字盖章</li>
                                             </ul>
-                                            <div class="form-actions">
+                                            <div class="form-actions" id="fileList" >
                                                 <div id="picker">上传合同</div>
 
                                             </div>
@@ -217,9 +217,9 @@
                                         </div>
                                         <div class="col-lg-3">
                                             <div class="box-footer">
-                                                <button type="submit" class="btn btn-primary">提交</button>
+                                                <button type="button" v-on:click="submit" id="submitBtn" class="btn btn-primary">提交</button>
                                                 &nbsp;&nbsp;&nbsp;&nbsp;
-                                                <button type="submit" class="btn btn-primary">重置</button>
+                                                <button type="submit" id="rebackBtn" class="btn btn-primary">重置</button>
                                             </div>
                                         </div>
 
@@ -278,17 +278,11 @@
 
 </script>
 <script src="/static/plugins/vue.js"></script>
+<script src="/static/plugins/layer/layer.js"></script>
 <script>
 
-    var app = new Vue({
-       el:"#app",//声明哪个容器给vue.js管理
-        data:{},
-        methods:{
-
-        }
-
-    });
-
+    var workerArray = [];
+    var fileArray = [];
     $(function () {
 
         //日期组件
@@ -300,10 +294,10 @@
             format: "yyyy-mm-dd"//日期格式，详见 http://bootstrap-datepicker.readthedocs.org/en/release/options.html#format
         });
 
-        //文件上传
+        //合同文件上传
         var uploder = WebUploader.create({
             swf : "js/uploader/Uploader.swf",
-            server: "#",
+            server: "/file/upload",
             pick: '#picker',
             auto : true,
             fileVal:'file'
@@ -313,6 +307,26 @@
              mimeTypes: 'image/!*'
              }*/
         });
+        uploder.on("uploadSuccess",function (file,resp) {
+            if(resp.status == "success") {
+                layer.msg("上传成功")
+                //上传成功后自动添加上传列表
+                var html = "<li>合同上传列表：</li><li>" + resp.data.sourceFileName + "</li>";
+                $("#fileList").append(html);
+                var json = {
+                    sourceName: resp.data.sourceFileName,
+                    newName: resp.data.newFileName
+                }
+                fileArray.push(json);
+            }else{
+                layer.msg(resp.data);
+            }
+
+
+        });
+        uploder.on("uploadError",function () {
+            layer.msg("服务器错误");
+        })
 
         //当选择工种时自动添加租金  数量默认为1 计算出总金额
        /* $("select").change(function () {
@@ -356,6 +370,12 @@
 
             //通过id 得到工种的对象 并赋值
             $.post("/device/workOut/add",{"id":workerTYids},function(data){
+                var json = {
+                    workId : data.id,
+                    workName : data.workName,
+                    workPrice : data.workPrice
+                }
+                workerArray.push(json);
                 //赋值
                 $(".workerPrice").text(data.workPrice);
                 $(".totalCost").text(data.workPrice);
@@ -372,6 +392,49 @@
             alert(workerNumm)
             console.log(workerNumm)
         })
+
+    });
+    var app = new Vue({
+        el:"#app",//声明哪个容器给vue.js管理
+        data:{},
+        methods:{
+            submit:function () {
+                //把表单封装成一个数组
+                var json = {
+                    company:$("#company").val(),
+                    address:$("#address").val(),
+                    telephone:$("#telephone").val(),
+                    corporate:$("#corporate").val(),
+                    phone:$("#phone").val(),
+                    identityCard:$("#identityCard").val(),
+                    sumMoney:$("#sumMoney").val(),
+                    firstMoney:$("#firstMoney").val(),
+                    lastMoney:$("#lastMoney").val(),
+                    workerArray:workerArray,
+                    fileArray:fileArray
+
+                };
+                $.ajax({
+                    url:"/device/workOut/new",
+                    type:"post",
+                    data:JSON.stringify(json),
+                    contentType:"application/json;charset=UTF-8",
+                    beforeSend:function () {
+                        $("#submitBtn").text("提交中...").attr("disabled","disabled");
+                    },
+                    success:function () {
+
+                    },
+                    error:function () {
+
+                    },
+                    complete:function () {
+                        $("#submitBtn").text("提交").removeAttr("disabled");
+                    }
+                })
+
+            }
+        }
 
     });
 

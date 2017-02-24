@@ -20,9 +20,9 @@
                     <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
-                    <li><a href="../charts/chartjs.html"><i class="fa fa-circle-o"></i> 日报</a></li>
-                    <li><a href="../charts/morris.html"><i class="fa fa-circle-o"></i> 月报</a></li>
-                    <li><a href="../charts/flot.html"><i class="fa fa-circle-o"></i> 年报</a></li>
+                    <li><a href="/statement/day"><i class="fa fa-circle-o"></i> 日报</a></li>
+                    <li><a href="/statement/month"><i class="fa fa-circle-o"></i> 月报</a></li>
+                    <li><a href="#"><i class="fa fa-circle-o"></i> 年报</a></li>
                 </ul>
             </li>
 

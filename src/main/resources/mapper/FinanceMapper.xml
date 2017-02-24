@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mxiaixy.mapper.FinanceMapper">
+
+
+    <insert id="saveFinance">
+        insert into t_finance (`name`,serial_number,`type`,money,state,create_time,create_user,confirm_user,confirm_date,`module`,remark,device_serial_number)
+        values(#{name},#{serialNumber},#{type},#{money},#{state},#{createTime},#{createUser},#{confirmUser},#{confirmDate},#{module},#{remark},#{deviceSerialNumber})
+    </insert>
+    <update id="update">
+        update t_finance set state = #{state} where id=#{id}
+    </update>
+    <select id="findFinanceByDeviceSerialNumber" resultType="com.mxiaixy.pojo.Finance">
+        select * from t_finance where device_serial_number = #{serialNumber}
+    </select>
+    <select id="findAll" resultType="com.mxiaixy.pojo.Finance">
+        select * from t_finance
+    </select>
+    <select id="findAllFinance" resultType="com.mxiaixy.pojo.Finance">
+        select * from t_finance
+        where confirm_date = #{day}
+        order by id DESC
+        limit ${start},${length}
+    </select>
+    <select id="count" resultType="java.lang.Long">
+        select count(*) from t_finance
+    </select>
+
+    <select id="findPieDataByDay" resultType="java.util.Map">
+           SELECT tf.module AS 'name',SUM(tf.money) AS 'value'
+        FROM t_finance AS tf
+        WHERE tf.confirm_user IS NOT NULL AND tf.confirm_date =#{day}
+        GROUP BY tf.module;
+    </select>
+    <select id="findMouth" resultType="com.mxiaixy.dto.MonthDto">
+         SELECT   tf.confirm_date AS `date` , SUM(money)AS money ,tf.type AS `type` ,tf.remark FROM t_finance AS tf
+         WHERE confirm_date LIKE #{mouth}+'%'
+         GROUP BY confirm_date , `type`
+          LIMIT ${start},${length}
+    </select>
+    <select id="countMonth" resultType="java.lang.Long">
+         SELECT count(*) FROM t_finance AS tf
+         WHERE confirm_date LIKE #{mouth}+'%'
+         GROUP BY confirm_date , `type`
+    </select>
+
+</mapper>
