@@ -156,6 +156,21 @@
       <version>2.9.4</version>
     </dependency>
 
+    <!--解密库-->
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>1.9</version>
+    </dependency>
+    <!--请求代理-->
+    <dependency>
+      <groupId>com.squareup.okhttp3</groupId>
+      <artifactId>okhttp</artifactId>
+      <version>3.5.0</version>
+    </dependency>
+
+
+
 
 
 
