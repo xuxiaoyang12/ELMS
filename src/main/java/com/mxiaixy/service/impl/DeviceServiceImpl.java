@@ -3,10 +3,12 @@ package com.mxiaixy.service.impl;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mxiaixy.dto.DeviceRentDto;
+import com.mxiaixy.dto.wx.TextMessage;
 import com.mxiaixy.exception.ServiceException;
 import com.mxiaixy.mapper.*;
 import com.mxiaixy.pojo.*;
 import com.mxiaixy.service.DeviceService;
+import com.mxiaixy.service.WeiXinService;
 import com.mxiaixy.util.SerialNumberUtil;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -40,6 +42,8 @@ public class DeviceServiceImpl implements DeviceService {
     private DeviceWorkerTypeMapper deviceWorkerTypeMapper;
     @Autowired
     private FinanceMapper financeMapper;
+    @Autowired
+    private WeiXinService weiXinService;
 
     @Value("${upload.path}")
     private String filePath;
@@ -168,6 +172,19 @@ public class DeviceServiceImpl implements DeviceService {
         finance.setRemark("预付款");
         finance.setDeviceSerialNumber(serialNumer);
         financeMapper.saveFinance(finance);
+
+        //通过微信企业号发送推送消息 提示财务部成员确认流水
+        TextMessage textMessage = new TextMessage();
+        TextMessage.TextBean textBean = new TextMessage.TextBean();
+        textMessage.setToparty("7   ");//部门列表
+        textBean.setContent("设备租赁模块添加一笔财务流水[预付款]，请确认");
+        textMessage.setText(textBean);
+
+        try {
+            weiXinService.sendText(textMessage);
+        } catch (IOException e) {
+            throw new ServiceException("发送文本消息异常",e);
+        }
 
 
         return String.valueOf(deviceRent.getSerialNumber());//返回对象序列号

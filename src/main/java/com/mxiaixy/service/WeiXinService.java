@@ -5,16 +5,20 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
+import com.mxiaixy.dto.wx.TextMessage;
 import com.mxiaixy.dto.wx.User;
 import com.mxiaixy.exception.ServiceException;
 
 import com.qq.weixin.mp.aes.AesException;
 import com.qq.weixin.mp.aes.WXBizMsgCrypt;
 import okhttp3.*;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.*;
 
 
 import java.io.IOException;
@@ -46,6 +50,8 @@ public class WeiXinService {
     private static final String UPDATE_USER_URL="https://qyapi.weixin.qq.com/cgi-bin/user/update?access_token={0}";
 
     private static final String DEL_USER_URL="https://qyapi.weixin.qq.com/cgi-bin/user/delete?access_token={0}&userid={1}";
+
+    private static final String SEND_MESSAGE_URL="https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token={0}";
 
     @Value("${wx.token}")
     private String token;
@@ -214,6 +220,11 @@ public class WeiXinService {
 
     }
 
+    /**
+     * 同步删除微信企业号成员
+     * @param userId
+     * @throws IOException
+     */
     public void delUser(String userId) throws IOException {
         //获取删除成员的url
         String url = MessageFormat.format(DEL_USER_URL,getAccessToken(),userId);
@@ -234,5 +245,32 @@ public class WeiXinService {
             throw new ServiceException("删除微信成员不成功"+map.get("errcode"));
         }
         logger.info("微信公共号成员删除成功");
+    }
+
+
+    public void sendText(TextMessage textMessage) throws IOException {
+        //获取发送消息url
+        String url = MessageFormat.format(SEND_MESSAGE_URL,getAccessToken());
+        //把 发送内容转换成jso
+        String json = new Gson().toJson(textMessage);
+        //设置字符编码格式
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json;charset=utf-8"),json);
+        //获取代理对象
+        OkHttpClient httpClient = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(url)
+                .post(requestBody)
+                .build();
+        Response response = httpClient.newCall(request).execute();
+        String result = response.body().string();
+
+        Map<String,Object> map = new Gson().fromJson(result,HashMap.class);
+        String errcode = map.get("errcode").toString();
+        if(!"0.0".equals(errcode)){
+            logger.error("发送消息失败{}",errcode);
+            throw new ServiceException("发送消息失败"+map.get("errcode"));
+        }
+        logger.info("消息发送成功");
+
     }
 }
