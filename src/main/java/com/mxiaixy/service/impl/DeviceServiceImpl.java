@@ -344,6 +344,20 @@ public class DeviceServiceImpl implements DeviceService {
         newFinance.setState(finance.getState());
         financeMapper.saveFinance(newFinance);
 
+        //通过微信企业号发送推送消息 提示财务部成员确认流水
+        TextMessage textMessage = new TextMessage();
+        TextMessage.TextBean textBean = new TextMessage.TextBean();
+        textMessage.setToparty("7");//部门列表
+        textBean.setContent("设备租赁模块添加一笔财务流水[尾款]，请确认");
+        textMessage.setText(textBean);
+
+        try {
+            weiXinService.sendText(textMessage);
+        } catch (IOException e) {
+            throw new ServiceException("发送文本消息异常",e);
+        }
+
+
 
     }
 
