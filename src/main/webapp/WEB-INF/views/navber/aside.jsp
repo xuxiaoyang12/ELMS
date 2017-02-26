@@ -12,19 +12,18 @@
     <section class="sidebar">
         <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu">
-
             <li class="treeview">
                 <a href="#">
-                    <i class="fa fa-pie-chart"></i>
-                    <span>财务报表</span>
+                    <i class="fa fa-vcard"></i>
+                    <span>账户管理</span>
                     <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
-                    <li><a href="/statement/day"><i class="fa fa-circle-o"></i> 日报</a></li>
-                    <li><a href="/statement/month"><i class="fa fa-circle-o"></i> 月报</a></li>
-                    <li><a href="#"><i class="fa fa-circle-o"></i> 年报</a></li>
+                    <li><a href="/user/list"><i class="fa fa-list-ul"></i> 账户列表</a></li>
+                    <li><a href="/user/add"><i class="fa fa-plus"></i> 新增账户</a></li>
                 </ul>
             </li>
+
 
             <li class="treeview ${fn:startsWith(param.menu,'device_') ? 'active' : ''} ">
                 <a href="/device/menu">
@@ -73,10 +72,30 @@
 
                 </ul>
             </li>
+
+            <li class="treeview">
+                <a href="#">
+                    <i class="fa fa-pie-chart"></i>
+                    <span>财务报表</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a href="/statement/day"><i class="fa fa-circle-o"></i> 日报</a></li>
+                    <li><a href="/statement/month"><i class="fa fa-circle-o"></i> 月报</a></li>
+                    <li><a href="#"><i class="fa fa-circle-o"></i> 年报</a></li>
+                </ul>
+            </li>
             <li class="treeview ${param.menu == 'pan' ? 'active' : ''}">
                 <a href="/pan/list">
                     <i class="fa fa-folder"></i>
                     <span>公司网盘</span>
+                </a>
+
+            </li>
+            <li class="treeview">
+                <a href="/user/logout">
+                    <i class="fa fa-sign-out "></i>
+                    <span>安全退出</span>
                 </a>
 
             </li>

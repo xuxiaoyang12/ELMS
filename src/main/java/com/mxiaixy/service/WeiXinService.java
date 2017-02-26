@@ -3,6 +3,7 @@ package com.mxiaixy.service;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.mxiaixy.dto.wx.User;
 import com.mxiaixy.exception.ServiceException;
@@ -41,6 +42,11 @@ public class WeiXinService {
      * 创建用户时的接口凭证
      */
     private static final String CREATE_USER_URL="https://qyapi.weixin.qq.com/cgi-bin/user/create?access_token={0}";
+
+    private static final String UPDATE_USER_URL="https://qyapi.weixin.qq.com/cgi-bin/user/update?access_token={0}";
+
+    private static final String DEL_USER_URL="https://qyapi.weixin.qq.com/cgi-bin/user/delete?access_token={0}&userid={1}";
+
     @Value("${wx.token}")
     private String token;
 
@@ -140,7 +146,7 @@ public class WeiXinService {
      * @param user
      * @throws IOException
      */
-    public void createUser(User user) throws IOException {
+    public  void createUser(User user) throws IOException {
         //获取微信创建成员的url
         String url = MessageFormat.format(CREATE_USER_URL,getAccessToken());
 
@@ -163,7 +169,7 @@ public class WeiXinService {
         //把响应的值转化为map
         Map<String,Object> map = new Gson().fromJson(result,HashMap.class);
         //判断接收值是否正确
-        if("0.0".equals(map.get("errcode").toString())){
+        if(!"0.0".equals(map.get("errcode").toString())){
             logger.error("用户创建失败",map.get("errcode"));
             throw new ServiceException("用户创建失败"+map.get("errcode"));
 
@@ -171,4 +177,62 @@ public class WeiXinService {
         logger.info(result+"成功");
     }
 
+
+    /**
+     * 同步微信更新成员
+     * @param user
+     * @throws IOException
+     */
+    public void updateUser(User user) throws IOException {
+        //获取更新成员的url
+        String url = MessageFormat.format(UPDATE_USER_URL,getAccessToken());
+
+        //获取传值对象并转换为json
+        String json = new Gson().toJson(user);
+        //设置传入值得格式和字符编码
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json;charset=utf-8"),json);
+        //获取请求代理
+        OkHttpClient okHttpClient = new OkHttpClient();
+        //发送请求
+        Request request = new Request.Builder()
+                .url(url)
+                .post(requestBody)
+                .build();
+        //接收响应
+        Response response = okHttpClient.newCall(request).execute();
+        //获取响应值
+        String result = response.body().string();
+
+        //转换为map集合
+        Map<String ,Object> map =new Gson().fromJson(result,HashMap.class);
+        //判断是否更新成功
+        //String errcode = map.get("errcode").toString();转化为字符串
+        if(!"0.0".equals(map.get("errcode").toString())){
+            logger.error("更新微信公众号成员失败{}",map.get("errcode"));
+            throw new ServiceException("更新微信公众号成员失败"+map.get("errcode"));
+        }
+
+    }
+
+    public void delUser(String userId) throws IOException {
+        //获取删除成员的url
+        String url = MessageFormat.format(DEL_USER_URL,getAccessToken(),userId);
+        //发出get请求
+        OkHttpClient httpClient = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+        Response response = httpClient.newCall(request).execute();
+        String result = response.body().string();
+
+        //转换为map
+        Map<String ,Object> map = new Gson().fromJson(result,HashMap.class);
+
+        String errcode = map.get("errcode").toString();
+        if(!"0.0".equals(errcode)){
+            logger.error("删除微信成员不成功{}",map.get("errcode"));
+            throw new ServiceException("删除微信成员不成功"+map.get("errcode"));
+        }
+        logger.info("微信公共号成员删除成功");
+    }
 }

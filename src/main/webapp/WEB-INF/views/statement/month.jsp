@@ -139,6 +139,7 @@
             "type":"get",
             "data":function (obj) {
                 obj.mouth = moment().format("YYYY-MM")
+
             }
         },
 

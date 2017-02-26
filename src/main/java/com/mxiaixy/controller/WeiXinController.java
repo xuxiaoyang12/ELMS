@@ -11,9 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created by Mxia on 2017/2/24.
@@ -37,15 +35,19 @@ public class WeiXinController {
         return weiXinService.init(msg_signature,timestamp,nonce,echostr);
     }
 
+    /**
+     * 临时测试创建用户
+     * @return
+     */
     @GetMapping("/hhh")
     public String jjjj(){
 
         Integer[] roleIds =new Integer[]{1,2};
         //创建新的用户
         User user = new User();
-        user.setUserid("liuxiaoshuai");
-        user.setName("刘小帅");
-        user.setMobile("15239033932");
+        user.setUserid("nijiushkhfasdhf");
+        user.setName("马程光");
+        user.setMobile("15239013691");
         user.setDepartment(Arrays.asList(roleIds));
         try {
             weiXinService.createUser(user);

@@ -3,11 +3,62 @@
         PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mxiaixy.mapper.UserMapper">
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        insert into t_user (`name`,password,mobile) VALUES (#{name},#{password},#{mobile})
+    </insert>
+    <insert id="saveRoleAndUser">
+        insert into t_user_role (user_id,role_id) VALUES (#{userId},#{roleId})
+    </insert>
+    <update id="update">
+        update  t_user
+        <set>
+            `name` = #{name},
+            <if test="password !=null and password != '' ">
+                password = #{password},
+            </if>
+            <if test="mobile !=null and mobile != ''">
+                mobile = #{mobile}
+            </if>
+        </set>
+        where id =#{id}
+    </update>
+    <delete id="delUserAndRoleByUserId">
+        delete from t_user_role where user_id = #{id}
+    </delete>
+    <delete id="delUserById">
+        delete from t_user where id = #{userId}
+    </delete>
 
-    <select id="findByEmail" resultType="User">
-        select * from t_user
+    <select id="findByName" resultType="com.mxiaixy.pojo.User">
+        select * from t_user where `name` = #{name}
     </select>
+    <select id="findAllUser" resultMap="userMap">
+        SELECT t_user.*,t_role.id AS role_id,t_role.view_name ,t_role.role_name FROM t_user
+        LEFT JOIN t_user_role ON t_user_role.user_id = t_user.id
+        LEFT JOIN t_role ON t_user_role.role_id = t_role.id
 
+    </select>
+    <select id="findUserById" resultMap="userMap">
+        SELECT t_user.*,t_role.id AS role_id,t_role.view_name ,t_role.role_name FROM t_user
+        LEFT JOIN t_user_role ON t_user_role.user_id = t_user.id
+        LEFT JOIN t_role ON t_user_role.role_id = t_role.id
+        where t_user.id=#{id}
+    </select>
+    <select id="findAllRole" resultType="com.mxiaixy.pojo.Role">
+        select * from t_role
+    </select>
+    <resultMap id="userMap" type="User">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="password" property="password"/>
+        <result column="mobile" property="mobile"/>
+        <collection property="roleList" ofType="Role">
+            <id column="role_id" property="id"/>
+            <result column="role_name" property="roleName"/>
+            <result column="view_name" property="viewName"/>
+        </collection>
+
+    </resultMap>
 
 
 </mapper>

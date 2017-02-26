@@ -45,7 +45,7 @@
 
         <form  method="post" >
             <div class="form-group has-feedback">
-                <input type="email" name="email" class="form-control" placeholder="帐号/邮箱/手机号码">
+                <input type="name" name="name" class="form-control" placeholder="帐号/邮箱/手机号码">
                 <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
             </div>
             <div class="form-group has-feedback">
