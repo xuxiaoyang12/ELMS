@@ -3,14 +3,6 @@
   Created by IntelliJ IDEA.
   User: Mxia
   Date: 2017/2/21
-  Time: 11:39
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%--
-  Created by IntelliJ IDEA.
-  User: Mxia
-  Date: 2017/2/21
   Time: 8:40
   To change this template use File | Settings | File Templates.
 --%>

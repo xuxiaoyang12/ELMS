@@ -20,6 +20,13 @@ public class FileServiceImpl implements FileService {
     @Value("${upload.path}")
     private String uploadPath;
 
+    /**
+     * 下载文件
+     * @param inputStream
+     * @param originalFilename
+     * @param contentType
+     * @return
+     */
     @Override
     @Transactional//添加事物
     public String uploadFile(InputStream inputStream, String originalFilename, String contentType) {

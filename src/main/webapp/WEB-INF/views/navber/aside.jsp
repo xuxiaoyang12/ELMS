@@ -85,6 +85,20 @@
                     <li><a href="#"><i class="fa fa-circle-o"></i> 年报</a></li>
                 </ul>
             </li>
+            <li class="header">工作流模块</li>
+            <li class="treeview ${fn:startsWith(param.menu,'process_') ? 'active' : ''}">
+                <a href="#">
+                    <i class="fa fa-cogs"></i> <span>个人流程</span> <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="treeview-menu">
+                    <li class="${param.menu == 'process_apply' ? 'active' : ''}">
+                        <a href="/process/apply"><i class="fa fa-circle-o"></i> 发起流程</a>
+                    </li>
+                    <li class="${param.menu == 'process_list' ? 'active' : ''}">
+                        <a href="/process/task/list"><i class="fa fa-circle-o"></i> 我的待办</a>
+                    </li>
+                </ul>
+            </li>
             <li class="treeview ${param.menu == 'pan' ? 'active' : ''}">
                 <a href="/pan/list">
                     <i class="fa fa-folder"></i>

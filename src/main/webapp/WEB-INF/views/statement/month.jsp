@@ -71,23 +71,16 @@
                             <table class="table table-bordered">
                                 <thead>
                                 <tr>
+                                    <th>ID</th>
                                     <th>日期</th>
-                                    <th>当日收入</th>
-                                    <th>当日支出</th>
+                                    <th>类型</th>
+                                    <th>金额</th>
                                     <th>备注</th>
                                     <th>操作</th>
 
                                 </tr>
                                 </thead>
 
-                                <tr>
-                                    <td>日期</td>
-                                    <td>当日收入</td>
-                                    <td>当日支出</td>
-                                    <td>备注</td>
-                                    <td>操作</td>
-
-                                </tr>
                             </table>
                         </div>
                     </div>
@@ -144,11 +137,13 @@
         },
 
         "columns":[
-            {"data":"confirmDate"},
-            {"data":"inMoney"},
-            {"data":"outMoney"},
+            {"data":function(){
+                return "";
+            }},
+            {"data":"date"},
+            {"data":"type"},
+            {"data":"money"},
             {"data":"remark"},
-            {"data":"operation"},
             {"data":function (row) {
                 if(row.state == '未确认'){
                     return "<a href='/device/rent/" + row + "'>确认</a>";

@@ -31,6 +31,11 @@ public class StatementController  {
         return "/statement/dayReport";
     }
 
+    /**
+     * 获取日报表
+     * @param request
+     * @return
+     */
     @GetMapping("/day/list")
     @ResponseBody
     public DataTablesResult dayReport(HttpServletRequest request){
@@ -60,6 +65,11 @@ public class StatementController  {
         return "/statement/dayReport";*/
     }
 
+    /**
+     * 获取日饼图报表
+     * @param day
+     * @return
+     */
     @GetMapping("/day/daySum")
     @ResponseBody
     public AjaxResult dayReport(String day){
@@ -75,6 +85,11 @@ public class StatementController  {
         return "/statement/month";
     }
 
+    /**
+     * 获取月报表列表
+     * @param request
+     * @return
+     */
     @GetMapping("/mouth/list")
     @ResponseBody
     public DataTablesResult mouthList(HttpServletRequest request){
@@ -89,8 +104,8 @@ public class StatementController  {
         map.put("month",month);
         //查询数据
         List<MonthDto> monthDtoList = statementService.findMonth(map);
-        Long count =statementService.countMouth();
-
-        return new DataTablesResult(draw,count,count,"");
+        //Long count =statementService.countMouth();
+        Long count = 10l;
+        return new DataTablesResult(draw,count,count,monthDtoList);
     }
 }

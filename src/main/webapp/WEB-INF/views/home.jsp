@@ -9,8 +9,14 @@
 <html>
 <head>
     <title>领先科技</title>
+    <%@include file="navber/css.jsp"%>
 </head>
+<body>
+<%@include file="navber/header.jsp"%>
+<%@include file="navber/aside.jsp"%>
 <h3>欢迎进入领先科技首页！</h3>
+<%@include file="navber/script.jsp"%>
+
 
 </body>
 </html>

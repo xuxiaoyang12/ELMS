@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mxiaixy.mapper.LeaveMapper">
+
+
+    <insert id="saveApply" useGeneratedKeys="true" keyProperty="id">
+        insert into t_leave(id,user_id,apply_time,start_time,end_time,reality_start_time,reality_end_time,leave_type,reason)
+        values(#{id},#{userId},#{applyTime},#{startTime},#{endTime},#{realityStartTime},#{realityEndTime},#{leaveType},#{reason})
+    </insert>
+    <update id="update">
+        UPDATE t_leave
+        <set>
+
+            <if test="startTime!=null and startTime!= ''">
+                START_TIME=#{startTime},
+            </if>
+            <if test="endTime!=null and endTime!= ''">
+                END_TIME=#{endTime},
+            </if>
+            <if test="reason!=null and reason!= ''">
+                REASON=#{reason} ,
+            </if>
+            <if test="leaveType!=null and leaveType!= ''">
+                LEAVE_TYPE=#{leaveType},
+            </if>
+
+            <if test="realityStartTime!=null and realityStartTime!= ''">
+                REALITY_START_TIME=#{realityStartTime},
+            </if>
+            <if test="realityEndTime!=null and realityEndTime!= ''">
+                REALITY_END_TIME=#{realityEndTime}
+            </if>
+        </set>
+        WHERE ID = #{id}
+    </update>
+</mapper>

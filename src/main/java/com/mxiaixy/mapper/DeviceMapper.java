@@ -1,6 +1,7 @@
 package com.mxiaixy.mapper;
 
 import com.mxiaixy.pojo.Device;
+import com.mxiaixy.pojo.User;
 
 import java.util.List;
 

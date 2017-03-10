@@ -28,21 +28,30 @@
     </select>
 
     <select id="findPieDataByDay" resultType="java.util.Map">
-           SELECT tf.module AS 'name',SUM(tf.money) AS 'value'
+        SELECT tf.module AS 'name',SUM(tf.money) AS 'value'
         FROM t_finance AS tf
-        WHERE tf.confirm_user IS NOT NULL AND tf.confirm_date =#{day}
+        WHERE tf.confirm_user IS NOT NULL AND tf.confirm_date = #{day}
         GROUP BY tf.module;
     </select>
-    <select id="findMouth" resultType="com.mxiaixy.dto.MonthDto">
-         SELECT   tf.confirm_date AS `date` , SUM(money)AS money ,tf.type AS `type` ,tf.remark FROM t_finance AS tf
-         WHERE confirm_date LIKE #{mouth}+'%'
-         GROUP BY confirm_date , `type`
-          LIMIT ${start},${length}
-    </select>
+
     <select id="countMonth" resultType="java.lang.Long">
          SELECT count(*) FROM t_finance AS tf
          WHERE confirm_date LIKE #{mouth}+'%'
          GROUP BY confirm_date , `type`
     </select>
+    <select id="findMouth" resultMap="monthDto">
+        SELECT   tf.confirm_date AS `date` , SUM(money)AS money ,tf.type AS `type` ,tf.remark FROM t_finance AS tf
+         WHERE confirm_date
+         LIKE '2017-02%'
+         GROUP BY confirm_date ,`type`
+         limit ${start},${length}
+
+    </select>
+    <resultMap id="monthDto" type="com.mxiaixy.dto.MonthDto">
+        <id column="date" property="date"/>
+        <result column="money" property="money"/>
+        <result column="type" property="type"/>
+        <result column="remark" property="remark"/>
+    </resultMap>
 
 </mapper>

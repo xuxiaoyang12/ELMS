@@ -31,7 +31,7 @@
 </head>
 <div>
     <c:if test="${not empty message}" >
-        <div class="alert alert-danger" >${message}</div>
+        <div class="alert alert-success" >${message}</div>
     </c:if>
 </div>
 <body class="hold-transition login-page" style="background-image: url(/static/img/bg.jpg);">

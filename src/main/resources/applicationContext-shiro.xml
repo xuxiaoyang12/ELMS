@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <property name="realm" ref="shiroDbRealm"/>
+        <!--配置缓存  以减少每次认证都要从数据库中查找数据 数据库压力-->
+        <property name="cacheManager" ref="cacheManager"/>
+    </bean>
+
+    <!--缓存机制-->
+    <bean id="cacheManager" class="org.apache.shiro.cache.MemoryConstrainedCacheManager"/>
+
+    <!--生命周期-->
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+    <!--配置shiro过滤工厂  与web.xml中的过滤器相连接-->
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <property name="securityManager" ref="securityManager"/>
+        <!--登录页面-->
+        <property name="loginUrl" value="/"/>
+        <!--登录成功后跳转的url-->
+        <property name="successUrl" value="/device/menu"/>
+        <!--权限不足后要弹回的页面-->
+        <property name="unauthorizedUrl" value="/403"/>
+        <!--设置哪些需要经过认证-->
+        <property name="filterChainDefinitions">
+            <value>
+                /static/** = anon
+                /wx/** = anon
+                /user = roles[role_admin]
+                /setting/** = roles[role_admin]
+                /** = authc
+            </value>
+        </property>
+    </bean>
+
+</beans>
